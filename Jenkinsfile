@@ -20,22 +20,22 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh "${env.MVN_CMD}"
+        bat "${env.MVN_CMD}"
       }
     }
 
     stage('Deploy to Tomcat') {
       steps {
         // If Jenkins and Tomcat are on the same machine and Jenkins user has permissions:
-        sh """
+        bat """
           set -e
           echo 'Stopping Tomcat...'
-          ${env.TOMCAT_HOME}/bin/shutdown.sh || true
+          ${env.TOMCAT_HOME}/bin/shutdown.bat || true
           sleep 2
           rm -rf ${env.TOMCAT_HOME}/webapps/tom* || true
           cp target/*.war ${env.TOMCAT_HOME}/webapps/${env.WAR_NAME}
           echo 'Starting Tomcat...'
-          ${env.TOMCAT_HOME}/bin/startup.sh
+          ${env.TOMCAT_HOME}/bin/startup.bat
         """
       }
     }
