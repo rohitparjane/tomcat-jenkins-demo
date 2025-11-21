@@ -35,7 +35,7 @@ pipeline {
                     timeout /t 5 /nobreak
 
                     echo Waiting for Tomcat to fully stop...
-                    timeout /t 30 /nobreak
+                    timeout /t 120 /nobreak
 
                     echo ------------------------------
                     echo Cleaning OLD deployment files
