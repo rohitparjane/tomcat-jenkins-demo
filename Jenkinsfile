@@ -32,7 +32,7 @@ pipeline {
                     call "${TOMCAT_HOME}\\bin\\shutdown.bat"
 
                     echo Waiting for Tomcat to fully stop...
-                    ping 127.0.0.1 -n 120 >nul
+                    ping 127.0.0.1 -n 100 >nul
 
                     echo Waiting for Tomcat to fully stop...
                     timeout /t 120 /nobreak
@@ -49,10 +49,15 @@ pipeline {
                     copy "${WAR_SOURCE}" "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}"
 
                     echo ------------------------------
+                    echo --------------waiting 10 sec
+                    ping 127.0.0.1 -n 10 >nul
+
+
                     echo Starting Tomcat...
                     echo ------------------------------
                     call "${TOMCAT_HOME}\\bin\\startup.bat"
-
+                    echo --- waiting 50 sec
+                    ping 127.0.0.1 -n 10 >nul
                     echo Deployment Done.
                 """
             }

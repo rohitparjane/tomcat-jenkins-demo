@@ -8,7 +8,7 @@ public class ControllerTest {
 
     @GetMapping("/HI")
     public String test(){
-        return "Hello Motherfuckers jenkins worked 15th time";
+        return "Hello Motherfuckers jenkins worked 20th last time try bhenchod";
     }
 
 }
