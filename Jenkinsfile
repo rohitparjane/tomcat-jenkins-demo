@@ -32,7 +32,7 @@ pipeline {
                     call "${TOMCAT_HOME}\\bin\\shutdown.bat"
 
                     echo Waiting for Tomcat to fully stop...
-                    timeout /t 5 /nobreak
+                    ping 127.0.0.1 -n 120 >nul
 
                     echo Waiting for Tomcat to fully stop...
                     timeout /t 120 /nobreak
