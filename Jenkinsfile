@@ -24,21 +24,28 @@ pipeline {
       }
     }
 
-    stage('Deploy to Tomcat') {
-      steps {
-        // If Jenkins and Tomcat are on the same machine and Jenkins user has permissions:
-        bat """
-          set -e
-          echo 'Stopping Tomcat...'
-          ${env.TOMCAT_HOME}/bin/shutdown.bat || true
-          sleep 2
-          rm -rf ${env.TOMCAT_HOME}/webapps/tom* || true
-          cp target/*.war ${env.TOMCAT_HOME}/webapps/${env.WAR_NAME}
-          echo 'Starting Tomcat...'
-          ${env.TOMCAT_HOME}/bin/startup.bat
-        """
-      }
-    }
+   stage('Deploy to Tomcat') {
+  steps {
+    bat """
+      echo Stopping Tomcat...
+      "${env.TOMCAT_HOME}\\bin\\shutdown.bat"
+
+      echo Waiting for Tomcat to stop...
+      timeout /t 5
+
+      echo Removing old WAR and folder...
+      del /F /Q "${env.TOMCAT_HOME}\\webapps\\tom.war"
+      rmdir /S /Q "${env.TOMCAT_HOME}\\webapps\\tom" 2>nul
+
+      echo Copying new WAR...
+      copy target\\Tom-0.0.1-SNAPSHOT.war "${env.TOMCAT_HOME}\\webapps\\tom.war"
+
+      echo Starting Tomcat...
+      "${env.TOMCAT_HOME}\\bin\\startup.bat"
+    """
+  }
+}
+
   }
 
   post {
