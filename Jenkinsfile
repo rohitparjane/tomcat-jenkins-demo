@@ -29,10 +29,13 @@ pipeline {
                     echo ------------------------------
                     echo Stopping Tomcat...
                     echo ------------------------------
-                    call "${TOMCAT_HOME}\\bin\\shutdown.bat"
+                    "${TOMCAT_HOME}\\bin\\shutdown.bat"
 
                     echo Waiting for Tomcat to fully stop...
                     timeout /t 5 /nobreak
+
+                    echo Waiting for Tomcat to fully stop...
+                    timeout /t 15 /nobreak
 
                     echo ------------------------------
                     echo Cleaning OLD deployment files
@@ -48,7 +51,7 @@ pipeline {
                     echo ------------------------------
                     echo Starting Tomcat...
                     echo ------------------------------
-                    call "${TOMCAT_HOME}\\bin\\startup.bat"
+                    "${TOMCAT_HOME}\\bin\\startup.bat"
 
                     echo Deployment Done.
                 """
