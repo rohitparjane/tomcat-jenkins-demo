@@ -19,7 +19,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat "\"${MVN_CMD}\""
+                bat "${MVN_CMD}"
             }
         }
 
@@ -31,33 +31,37 @@ pipeline {
                     echo ------------------------------
                     call "${TOMCAT_HOME}\\bin\\shutdown.bat"
 
-                    echo Waiting for Tomcat...
+                    echo Waiting for Tomcat to fully stop...
                     timeout /t 5 /nobreak
 
                     echo ------------------------------
-                    echo Removing OLD deployment
+                    echo Cleaning OLD deployment files
                     echo ------------------------------
                     del /F /Q "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}" 2>nul
                     rmdir /S /Q "${TOMCAT_HOME}\\webapps\\tom" 2>nul
 
                     echo ------------------------------
-                    echo Copying NEW WAR
+                    echo Copying new WAR
                     echo ------------------------------
-                    copy "${WORKSPACE}\\${WAR_SOURCE}" "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}"
+                    copy "${WAR_SOURCE}" "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}"
 
                     echo ------------------------------
                     echo Starting Tomcat...
                     echo ------------------------------
                     call "${TOMCAT_HOME}\\bin\\startup.bat"
 
-                    echo Deployment Finished.
+                    echo Deployment Done.
                 """
             }
         }
     }
 
     post {
-        success { echo "🎉 Deployment completed successfully!" }
-        failure { echo "❌ Build or Deployment failed!" }
+        success {
+            echo "🎉 Deployment completed successfully!"
+        }
+        failure {
+            echo "❌ Build or Deployment failed!"
+        }
     }
 }
