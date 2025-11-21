@@ -19,7 +19,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat "${MVN_CMD}"
+                bat "\"${MVN_CMD}\""
             }
         }
 
@@ -29,39 +29,35 @@ pipeline {
                     echo ------------------------------
                     echo Stopping Tomcat...
                     echo ------------------------------
-                    "${TOMCAT_HOME}\\bin\\shutdown.bat"
+                    call "${TOMCAT_HOME}\\bin\\shutdown.bat"
 
-                    echo Waiting for Tomcat to fully stop...
+                    echo Waiting for Tomcat...
                     timeout /t 5 /nobreak
 
                     echo ------------------------------
-                    echo Cleaning OLD deployment files
+                    echo Removing OLD deployment
                     echo ------------------------------
                     del /F /Q "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}" 2>nul
                     rmdir /S /Q "${TOMCAT_HOME}\\webapps\\tom" 2>nul
 
                     echo ------------------------------
-                    echo Copying new WAR
+                    echo Copying NEW WAR
                     echo ------------------------------
-                    copy "${WAR_SOURCE}" "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}"
+                    copy "${WORKSPACE}\\${WAR_SOURCE}" "${TOMCAT_HOME}\\webapps\\${WAR_DEPLOY}"
 
                     echo ------------------------------
                     echo Starting Tomcat...
                     echo ------------------------------
-                    "${TOMCAT_HOME}\\bin\\startup.bat"
+                    call "${TOMCAT_HOME}\\bin\\startup.bat"
 
-                    echo Deployment Done.
+                    echo Deployment Finished.
                 """
             }
         }
     }
 
     post {
-        success {
-            echo "🎉 Deployment completed successfully!"
-        }
-        failure {
-            echo "❌ Build or Deployment failed!"
-        }
+        success { echo "🎉 Deployment completed successfully!" }
+        failure { echo "❌ Build or Deployment failed!" }
     }
 }
